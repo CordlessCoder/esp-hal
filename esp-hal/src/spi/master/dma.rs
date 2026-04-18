@@ -290,6 +290,56 @@ impl<'d> SpiDma<'d, Async> {
             self.dma_driver().state.tx_transfer_in_progress.set(false);
         }
     }
+
+    /// Perform a half-duplex read operation using DMA, asynchronously.
+    #[allow(clippy::type_complexity)]
+    #[cfg_attr(place_spi_master_driver_in_ram, ram)]
+    #[instability::unstable]
+    pub async fn half_duplex_read_and_wait<RX: DmaRxBuffer>(
+        &mut self,
+        data_mode: DataMode,
+        cmd: Command,
+        address: Address,
+        dummy: u8,
+        bytes_to_read: usize,
+        buffer: &mut RX,
+    ) -> Result<(), Error> {
+        self.wait_for_idle_async().await;
+        let mut spi = DropGuard::new(self, |spi| spi.cancel_transfer());
+
+        unsafe {
+            spi.start_half_duplex_read(data_mode, cmd, address, dummy, bytes_to_read, buffer)?
+        };
+        spi.wait_for_idle_async().await;
+
+        spi.defuse();
+        Ok(())
+    }
+
+    /// Perform a half-duplex write operation using DMA, asynchronously.
+    #[allow(clippy::type_complexity)]
+    #[cfg_attr(place_spi_master_driver_in_ram, ram)]
+    #[instability::unstable]
+    pub async fn half_duplex_write_and_wait<TX: DmaTxBuffer>(
+        &mut self,
+        data_mode: DataMode,
+        cmd: Command,
+        address: Address,
+        dummy: u8,
+        bytes_to_write: usize,
+        buffer: &mut TX,
+    ) -> Result<(), Error> {
+        self.wait_for_idle_async().await;
+        let mut spi = DropGuard::new(self, |spi| spi.cancel_transfer());
+
+        unsafe {
+            spi.start_half_duplex_write(data_mode, cmd, address, dummy, bytes_to_write, buffer)?;
+        };
+        spi.wait_for_idle_async().await;
+
+        spi.defuse();
+        Ok(())
+    }
 }
 
 impl<Dm> core::fmt::Debug for SpiDma<'_, Dm>
