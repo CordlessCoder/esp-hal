@@ -7,7 +7,7 @@ use super::*;
 /// FIFO. See [DmaRxBuf] for receiving data.
 #[derive(Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
-pub(crate) struct ScopedDmaTxBuf<'a> {
+pub struct ScopedDmaTxBuf<'a> {
     descriptors: DescriptorSet<'a>,
     buffer: &'a mut [u8],
     burst: BurstConfig,
@@ -123,11 +123,13 @@ impl<'a> ScopedDmaTxBuf<'a> {
     }
 
     /// Returns the buf as a mutable slice than can be written.
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
         self.buffer
     }
 
     /// Returns the buf as a slice than can be read.
+    #[inline]
     pub fn as_slice(&self) -> &[u8] {
         self.buffer
     }
@@ -179,7 +181,7 @@ unsafe impl<'a> DmaTxBuffer for ScopedDmaTxBuf<'a> {
 /// See [ScopedDmaTxBuf] for transmitting data.
 #[derive(Debug)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
-pub(crate) struct ScopedDmaRxBuf<'a> {
+pub struct ScopedDmaRxBuf<'a> {
     descriptors: DescriptorSet<'a>,
     buffer: &'a mut [u8],
     burst: BurstConfig,
@@ -275,11 +277,13 @@ impl<'a> ScopedDmaRxBuf<'a> {
     }
 
     /// Returns the entire underlying buffer as a slice than can be read.
+    #[inline]
     pub fn as_slice(&self) -> &[u8] {
         self.buffer
     }
 
     /// Returns the entire underlying buffer as a slice than can be written.
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
         self.buffer
     }

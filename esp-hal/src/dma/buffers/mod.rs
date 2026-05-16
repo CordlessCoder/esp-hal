@@ -10,7 +10,7 @@ use crate::soc::is_slice_in_dram;
 #[cfg(dma_can_access_psram)]
 use crate::soc::{is_slice_in_psram, is_valid_psram_address, is_valid_ram_address};
 
-pub(crate) mod scoped;
+pub mod scoped;
 pub(crate) use scoped::*;
 
 /// Error returned from Dma[Rx|Tx|RxTx]Buf operations.
@@ -572,11 +572,13 @@ impl DmaTxBuf {
     }
 
     /// Returns the buf as a mutable slice than can be written.
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
         self.0.as_mut_slice()
     }
 
     /// Returns the buf as a slice than can be read.
+    #[inline]
     pub fn as_slice(&self) -> &[u8] {
         self.0.as_slice()
     }
@@ -676,11 +678,13 @@ impl DmaRxBuf {
     }
 
     /// Returns the entire underlying buffer as a slice than can be read.
+    #[inline]
     pub fn as_slice(&self) -> &[u8] {
         self.0.as_slice()
     }
 
     /// Returns the entire underlying buffer as a slice than can be written.
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
         self.0.as_mut_slice()
     }
@@ -828,11 +832,13 @@ impl DmaRxTxBuf {
     }
 
     /// Returns the entire buf as a slice than can be read.
+    #[inline]
     pub fn as_slice(&self) -> &[u8] {
         self.buffer
     }
 
     /// Returns the entire buf as a slice than can be written.
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
         self.buffer
     }

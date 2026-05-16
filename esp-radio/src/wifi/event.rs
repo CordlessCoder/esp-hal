@@ -808,6 +808,7 @@ pub struct Collection<T>(alloc::vec::Vec<T>);
 
 impl<T> Collection<T> {
     /// The elements of this collection.
+    #[inline]
     pub fn as_slice(&self) -> &[T] {
         self.0.as_slice()
     }
